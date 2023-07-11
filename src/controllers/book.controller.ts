@@ -2,25 +2,29 @@ import { Request, Response } from "express";
 import { Book } from "../models/book.model";
 import { connectionDB } from '../config/data-source';
 import { Repository } from "typeorm";
+import { Log } from "../models/log.model";
 
 const postBook = async ({ body }: Request, res: Response) => {
     try {
 
         const book = new Book();
-        const { isbn, title, author, year_of_publication, summary } = body;
+        const log = new Log();
 
-        book.isbn = isbn
-        book.title = title
-        book.author = author
-        book.year_of_publication = year_of_publication
-        book.summary = summary
-
+        Object.assign(book, body);
+        Object.assign(log, body);
+        
         await connectionDB.manager.save(book);
+        
+        log.id_book = book.id;
+
+        await connectionDB.manager.save(log);
+
         res.send({ mensaje: "guardado exitoso" });
         
     } catch (e) {
-
+        console.log(e)
         res.status(500).send({ error: "ERROR_POST_BOOK" });
+
     }
 }
 

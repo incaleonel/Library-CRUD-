@@ -3,6 +3,7 @@ import "reflect-metadata";
 import cors from 'cors';
 import { connectionDB } from './config/data-source';
 import { routerBook } from './routes/book';
+
 connectionDB.initialize().then(()=>{ console.log('base de datos conectada')}).catch((e)=>console.log(e))
 const app = express();
 app.use(express.json());

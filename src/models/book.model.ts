@@ -5,18 +5,18 @@ export class Book {
     @PrimaryGeneratedColumn()
     id: number
 
-    @Column({ unique: true, nullable: false })
+    @Column({ unique: true})
     isbn: string
 
-    @Column({nullable: false })
+    @Column()
     title: string
 
-    @Column({nullable: false })
+    @Column()
     author: string
 
-    @Column({nullable: false })
+    @Column()
     year_of_publication: number
 
-    @Column()
+    @Column({nullable: true})
     summary: string
 }

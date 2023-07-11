@@ -1,6 +1,7 @@
 import { DataSource } from "typeorm";
 import dotenv from 'dotenv';
 import { Book } from "../models/book.model";
+import { Log } from "../models/log.model";
 dotenv.config();
 
 /* Conexion a mi base de datos */
@@ -12,6 +13,6 @@ export const connectionDB = new DataSource({
     password: process.env.DB_PASSWORD,
     database: "librarydb",
     synchronize: true,
-    entities:[Book]
+    entities:[Book, Log]
 })
 
