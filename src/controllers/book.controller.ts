@@ -12,17 +12,17 @@ const postBook = async ({ body }: Request, res: Response) => {
 
         Object.assign(book, body);
         Object.assign(log, body);
-        
-        await connectionDB.manager.save(book);
+        console.log(book);
+        await book.save();
         
         log.id_book = book.id;
 
-        await connectionDB.manager.save(log);
+        await log.save();
 
         res.send({ mensaje: "guardado exitoso" });
         
     } catch (e) {
-        console.log(e)
+        console.log(e);
         res.status(500).send({ error: "ERROR_POST_BOOK" });
 
     }
@@ -50,17 +50,21 @@ const updateBook = async (_req: Request, res: Response) => {
 }
 
 const deleteBook = async (req: Request, res: Response) => {
+
     const bookRepository = connectionDB.getRepository(Book);
+    const logRepository = connectionDB.getRepository(Log);
+
     const { id } = req.params;
 
     try {
         const book = await bookRepository.findOneBy({ id: Number(id) });
-
+        const log = await logRepository.findBy({ id_book: Number(id) });
         if (book) {
             await bookRepository.remove(book);
+            await bookRepository.remove(log);
             res.send({mensaje:"registro eliminado correctamente"});
         } else {
-            res.send({mensaje:"No existe ningun registro con ese id"})
+            res.send({mensaje:"No existe ningun registro con ese id"});
         }
     } catch {
         res.status(500).send({ error: "ERROR_DELETE_BOOK" });
