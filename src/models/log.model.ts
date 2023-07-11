@@ -3,12 +3,12 @@ import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, BaseEntity } 
 @Entity({name:"history"})
 export class Log extends BaseEntity { 
     @PrimaryGeneratedColumn()
-    id: number
+    id_history: number
 
     @Column()
     id_book: number
     
-    @Column({ unique: true })
+    @Column()
     isbn: string
 
     @Column()

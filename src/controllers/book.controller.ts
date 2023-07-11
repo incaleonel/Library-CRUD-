@@ -1,25 +1,15 @@
 import { Request, Response } from "express";
 import { Book } from "../models/book.model";
-import { connectionDB } from '../config/data-source';
-import { Repository } from "typeorm";
 import { Log } from "../models/log.model";
 
 const postBook = async ({ body }: Request, res: Response) => {
     try {
 
-        const book = new Book();
-        const log = new Log();
+        const book = await Book.save(body);
 
-        Object.assign(book, body);
-        Object.assign(log, body);
-        console.log(book);
-        await book.save();
-        
-        log.id_book = book.id;
+        await Log.save(book);
 
-        await log.save();
-
-        res.send({ mensaje: "guardado exitoso" });
+        res.send({ mensaje: "registro guardado" });
         
     } catch (e) {
         console.log(e);
@@ -30,7 +20,7 @@ const postBook = async ({ body }: Request, res: Response) => {
 
 const getBooks = async (_req: Request, res: Response) => {
     try {
-        const allBooks = await connectionDB.manager.find(Book);
+        const allBooks = await Book.find();
 
         res.send(allBooks);
 
@@ -41,27 +31,38 @@ const getBooks = async (_req: Request, res: Response) => {
     }
 }
 
-const updateBook = async (_req: Request, res: Response) => {
+const updateBook = async ({params,body}: Request, res: Response) => {
+    const { id } = params;
     try {
-
-    } catch {
+        const book = await Book.findOneBy({ id_book: Number(id) });
+        
+        if (book) {
+            Object.assign(book ,body);
+            await Book.update({ id_book: Number(id) },book)
+            await Log.save(book);   
+            res.send({mensaje:"Registro actualizado"});
+        } else {
+            res.send({mensaje:"Registro no existe"});
+        }
+    } catch(e) {
+        console.log(e)
         res.status(500).send({ error: "ERROR_UPDATE_BOOK" });
     }
 }
 
 const deleteBook = async (req: Request, res: Response) => {
 
-    const bookRepository = connectionDB.getRepository(Book);
-    const logRepository = connectionDB.getRepository(Log);
-
     const { id } = req.params;
 
     try {
-        const book = await bookRepository.findOneBy({ id: Number(id) });
-        const log = await logRepository.findBy({ id_book: Number(id) });
+        const book = await Book.findOneBy({ id_book: Number(id) });
+        const log = await Log.findBy({ id_book: Number(id) });
+      
         if (book) {
-            await bookRepository.remove(book);
-            await bookRepository.remove(log);
+
+            await Book.remove(book);
+            await Log.remove(log);
+
             res.send({mensaje:"registro eliminado correctamente"});
         } else {
             res.send({mensaje:"No existe ningun registro con ese id"});
@@ -74,10 +75,10 @@ const deleteBook = async (req: Request, res: Response) => {
 const getBook = async (req: Request, res: Response) => {
     try {
         const { id } = req.params;
-        const bookRepository: Repository<Book> = connectionDB.getRepository(Book);
+        
+        const log = await Log.findBy({id_book:Number(id)});
 
-        const oneBook = await bookRepository.findOneOrFail({ where: { id: Number(id) } });
-        res.send(oneBook);
+        res.send(log);
 
     } catch {
 

@@ -3,7 +3,7 @@ import { Entity, PrimaryGeneratedColumn, Column, BaseEntity } from "typeorm"
 @Entity({name:"library"})
 export class Book extends BaseEntity { 
     @PrimaryGeneratedColumn()
-    id: number
+    id_book: number
 
     @Column({ unique: true})
     isbn: string
