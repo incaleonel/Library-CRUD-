@@ -9,11 +9,11 @@ const postBook = async ({ body }: Request, res: Response) => {
 
         await Log.save(book);
 
-        res.send({ mensaje: "registro guardado" });
+        res.send({ successful: true, msg: "saved record" });
         
-    } catch (e) {
-        
-        res.status(500).send({ error: "ERROR_POST_BOOK" });
+    } catch {
+
+        res.status(500).send({ successful: false, msg: "ERROR POST BOOK" });
 
     }
 }
@@ -26,7 +26,7 @@ const getBooks = async (_req: Request, res: Response) => {
 
     } catch {
 
-        res.status(500).send({ error: "ERROR_GET_BOOKS" });
+        res.status(500).send({ successful: false, msg: "ERROR GET BOOK" });
 
     }
 }
@@ -34,39 +34,34 @@ const getBooks = async (_req: Request, res: Response) => {
 const updateBook = async ({params,body}: Request, res: Response) => {
     
     try {
-        const book = await Book.findOneBy({ isbn: params.id });
+        const book = await Book.findOneByOrFail({ isbn: params.id });
         
-        if (book) {
             Object.assign(book ,body);
-            await Book.update({ isbn: params.id },book)
-            await Log.save(book);   
-            res.send({mensaje:"Registro actualizado"});
-        } else {
-            res.send({mensaje:"Registro no existe"});
-        }
-    } catch(e) {
+
+            await Book.update({ isbn: params.id },book);
+            await Log.save(book);
+            
+            res.send({ successful: true, msg: "updated record" });
+
+    } catch {
         
-        res.status(500).send({ error: "ERROR_UPDATE_BOOK" });
+        res.status(500).send({ successful: false, msg: "ERROR UPDATE BOOK" });
     }
 }
 
 const deleteBook = async ({params}: Request, res: Response) => {
 
     try {
-        const book = await Book.findOneBy({ isbn: params.id });
+        const book = await Book.findOneByOrFail({ isbn: params.id });
         const log = await Log.findBy({ isbn: params.id });
-      
-        if (book) {
 
-            await Book.remove(book);
-            await Log.remove(log);
+        await Book.remove(book);
+        await Log.remove(log);
+        
+        res.send({ successful: true, msg: "deleted record" });
 
-            res.send({mensaje:"registro eliminado correctamente"});
-        } else {
-            res.send({mensaje:"No existe ningun registro con ese id"});
-        }
     } catch {
-        res.status(500).send({ error: "ERROR_DELETE_BOOK" });
+        res.status(500).send({ successful: false, msg: "ERROR DELETE BOOK" });
     }
 }
 
@@ -79,7 +74,7 @@ const getBook = async ({params}: Request, res: Response) => {
 
     } catch {
 
-        res.status(500).send({ error: "ERROR_GET_BOOK" });
+        res.status(500).send({ successful: false, msg: "ERROR GET BOOK" });
 
     }
 }

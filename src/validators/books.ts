@@ -1,5 +1,5 @@
 import { check } from "express-validator";
-import { validateResult } from '../helpers/validateHelper';
+import { validatePostResult } from '../helpers/validateHelper';
 import { NextFunction, Request, Response } from "express";
 
 export const validateBooks = [
@@ -8,7 +8,7 @@ export const validateBooks = [
         .not()
         .isEmpty()
         .isISBN()
-        .isString(),
+        .isNumeric(),
     check('title')
         .exists()
         .not()
@@ -23,6 +23,6 @@ export const validateBooks = [
         .isEmpty()
         .isNumeric(),
         (req:Request,res:Response,next:NextFunction) =>{
-            validateResult(req,res,next);
+            validatePostResult(req,res,next);
         } 
 ]
