@@ -1,11 +1,9 @@
-import { Entity, PrimaryGeneratedColumn, Column, BaseEntity } from "typeorm"
+import { Entity, Column, BaseEntity, PrimaryColumn } from "typeorm"
 
 @Entity({name:"library"})
 export class Book extends BaseEntity { 
-    @PrimaryGeneratedColumn()
-    id_book: number
-
-    @Column({ unique: true})
+    
+    @PrimaryColumn({ unique: true})
     isbn: string
 
     @Column()

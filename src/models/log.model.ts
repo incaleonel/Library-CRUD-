@@ -4,9 +4,6 @@ import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, BaseEntity } 
 export class Log extends BaseEntity { 
     @PrimaryGeneratedColumn()
     id_history: number
-
-    @Column()
-    id_book: number
     
     @Column()
     isbn: string

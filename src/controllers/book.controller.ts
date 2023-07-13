@@ -4,7 +4,7 @@ import { Log } from "../models/log.model";
 
 const postBook = async ({ body }: Request, res: Response) => {
     try {
-
+        
         const book = await Book.save(body);
 
         await Log.save(book);
@@ -12,7 +12,7 @@ const postBook = async ({ body }: Request, res: Response) => {
         res.send({ mensaje: "registro guardado" });
         
     } catch (e) {
-        console.log(e);
+        
         res.status(500).send({ error: "ERROR_POST_BOOK" });
 
     }
@@ -32,31 +32,29 @@ const getBooks = async (_req: Request, res: Response) => {
 }
 
 const updateBook = async ({params,body}: Request, res: Response) => {
-    const { id } = params;
+    
     try {
-        const book = await Book.findOneBy({ id_book: Number(id) });
+        const book = await Book.findOneBy({ isbn: params.id });
         
         if (book) {
             Object.assign(book ,body);
-            await Book.update({ id_book: Number(id) },book)
+            await Book.update({ isbn: params.id },book)
             await Log.save(book);   
             res.send({mensaje:"Registro actualizado"});
         } else {
             res.send({mensaje:"Registro no existe"});
         }
     } catch(e) {
-        console.log(e)
+        
         res.status(500).send({ error: "ERROR_UPDATE_BOOK" });
     }
 }
 
-const deleteBook = async (req: Request, res: Response) => {
-
-    const { id } = req.params;
+const deleteBook = async ({params}: Request, res: Response) => {
 
     try {
-        const book = await Book.findOneBy({ id_book: Number(id) });
-        const log = await Log.findBy({ id_book: Number(id) });
+        const book = await Book.findOneBy({ isbn: params.id });
+        const log = await Log.findBy({ isbn: params.id });
       
         if (book) {
 
@@ -72,11 +70,10 @@ const deleteBook = async (req: Request, res: Response) => {
     }
 }
 
-const getBook = async (req: Request, res: Response) => {
+const getBook = async ({params}: Request, res: Response) => {
     try {
-        const { id } = req.params;
         
-        const log = await Log.findBy({id_book:Number(id)});
+        const log = await Log.findBy({isbn: params.id});
 
         res.send(log);
 
