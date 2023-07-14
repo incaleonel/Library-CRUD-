@@ -5,7 +5,7 @@ import { checkBook, checkLog } from "../helpers/validateHelper";
 
 
 const routerBook = Router();
-
+//rutas del crud
 routerBook.get('/',getBooks);
 routerBook.get('/:id',checkBook,getBook);
 routerBook.post('/',validateBooks,postBook);

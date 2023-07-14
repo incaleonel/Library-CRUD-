@@ -2,25 +2,26 @@ import { Request, Response } from "express";
 import { Book } from "../models/book.model";
 import { Log } from "../models/log.model";
 
+//Controlador para guardar un libro en la coleccion.
 const postBook = async ({ body }: Request, res: Response) => {
     try {
         
-        const book = await Book.save(body);
-
+        const book:Book = await Book.save(body);
+        
         await Log.save(book);
 
         res.send({ successful: true, msg: "saved record" });
         
-    } catch {
-
+    } catch(e) {
+        console.log(e)
         res.status(500).send({ successful: false, msg: "ERROR POST BOOK" });
 
     }
 }
-
+//Controlador para obtener todos los libros de mi coleccion.
 const getBooks = async (_req: Request, res: Response) => {
     try {
-        const allBooks = await Book.find();
+        const allBooks:Book[] = await Book.find();
 
         res.send(allBooks);
 
@@ -30,15 +31,15 @@ const getBooks = async (_req: Request, res: Response) => {
 
     }
 }
-
+//Controlador para actualizar un libro especifico de mi coleccion.
 const updateBook = async ({params,body}: Request, res: Response) => {
     
     try {
-        const book = await Book.findOneByOrFail({ isbn: params.id });
+        const book:Book = await Book.findOneByOrFail({ id_book: Number(params.id) });
         
             Object.assign(book ,body);
 
-            await Book.update({ isbn: params.id },book);
+            await Book.update({ id_book: Number(params.id) },book);
             await Log.save(book);
             
             res.send({ successful: true, msg: "updated record" });
@@ -49,11 +50,12 @@ const updateBook = async ({params,body}: Request, res: Response) => {
     }
 }
 
+//Controlador para borrar un libro especifico de mi coleccion.
 const deleteBook = async ({params}: Request, res: Response) => {
 
     try {
-        const book = await Book.findOneByOrFail({ isbn: params.id });
-        const log = await Log.findBy({ isbn: params.id });
+        const book:Book = await Book.findOneByOrFail({ id_book: Number(params.id) });
+        const log:Log[] = await Log.findBy({ id_book: Number(params.id) });
 
         await Book.remove(book);
         await Log.remove(log);
@@ -68,7 +70,7 @@ const deleteBook = async ({params}: Request, res: Response) => {
 const getBook = async ({params}: Request, res: Response) => {
     try {
         
-        const log = await Log.findBy({isbn: params.id});
+        const log:Log[] = await Log.findBy({ id_book: Number(params.id) });
 
         res.send(log);
 

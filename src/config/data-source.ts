@@ -5,6 +5,7 @@ import { Log } from "../models/log.model";
 dotenv.config();
 
 /* Conexion a mi base de datos */
+
 export const connectionDB = new DataSource({
     type: "postgres",
     host: "localhost",

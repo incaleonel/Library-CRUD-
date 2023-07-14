@@ -1,9 +1,13 @@
-import { Entity, Column, BaseEntity, PrimaryColumn } from "typeorm"
+import { Entity, Column, BaseEntity, PrimaryGeneratedColumn } from "typeorm"
 
+//representa una entidad de library en la base de datos.
 @Entity({name:"library"})
 export class Book extends BaseEntity { 
     
-    @PrimaryColumn({ unique: true})
+    @PrimaryGeneratedColumn()
+    id_book: number
+
+    @Column({ unique:true })
     isbn: string
 
     @Column()
